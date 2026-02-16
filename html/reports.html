@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Quality Analytics</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- External CSS - Uses same dashboard CSS -->
+  <link rel="stylesheet" href="../css/dashboard.css">
+  
+  <!-- Analytics-specific CSS -->
+  <link rel="stylesheet" href="../css/analytics.css">
+
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <!-- Chart.js Zoom Plugin for interactive charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+  
+  <!-- Simple Statistics Library for Analytics -->
+  <script src="https://unpkg.com/simple-statistics@7.8.3/dist/simple-statistics.min.js"></script>
+</head>
+
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3 id="loadingText">Loading...</h3>
+    </div>
+  </div>
+
+  <!-- Mode Transition Overlay -->
+  <div class="mode-transition" id="modeTransition"></div>
+  
+  <!-- Stars for dark mode -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Overlay behind sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <ul>
+        <li><a href="dashboard.html"><i class="fas fa-home icon"></i><span class="text">Dashboard</span></a></li>
+        <li id="historyTab"><a href="history.html" data-hide-for-role="guest"><i class="fas fa-database icon"></i><span class="text">Data and Analysis</span></a></li>
+        <li id="alertsTab"><a href="alerts.html"><i class="fas fa-bell icon"></i><span class="text">Alerts</span></a></li>
+        <li id="reportsTab" class="active"><a href="reports.html"><i class="fas fa-file-alt icon"></i><span class="text">Reports</span></a></li>
+        <li id="aboutTab"><a href="about.html"><i class="fas fa-info-circle icon"></i><span class="text">About</span></a></li>
+        <li id="systemConfigurationTab"><a href="systemConfig.html"><i class="fas fa-user-cog icon"></i><span class="text">System Configuration</span></a></li>
+        <li id="adminDashboardTab" style="display: none;"><a href="admindashboard.html"><i class="fas fa-user-shield icon"></i><span class="text">Admin</span></a></li>
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <!-- ENHANCED TOP STATUS BAR -->
+      <div class="top-status">
+        <!-- Left Section: Branding -->
+        <div class="status-left">
+          <svg class="header-fish-icon" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="30" rx="40" ry="18" fill="#0ea5e9" stroke="#0284c7" stroke-width="2"/>
+            <polygon points="90,30 110,18 110,42" fill="#0ea5e9" stroke="#0284c7" stroke-width="2"/>
+            <circle cx="30" cy="28" r="4" fill="white"/>
+          </svg>
+          <div class="header-text">
+            <div class="header-title">Bangus Pond Monitor</div>
+            <div class="header-location">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Binmaley, Pangasinan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Section: Status Items -->
+        <div class="status-right">
+          <div class="status-item">
+            <i class="fas fa-wifi"></i>
+            ESP32: <span id="espStatus" class="dot offline"></span>
+          </div>
+          
+          <div class="battery-indicator" id="batteryIndicator">
+            <i class="fas fa-battery-three-quarters"></i>
+            <span id="battery">--%</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-fan"></i>
+            Aerator: <span id="aeratorStatusText">--</span>
+          </div>
+
+          <div class="status-item">
+            <i class="fas fa-clock"></i>
+            <span id="lastUpdate">--</span>
+          </div>
+
+          <!-- Dark Mode Toggle Button -->
+          <div class="header-theme-toggle">
+            <label class="theme-toggle-switch" title="Toggle dark mode">
+              <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+              <span class="theme-toggle-slider">
+                <i class="fas fa-sun theme-icon-sun"></i>
+                <i class="fas fa-moon theme-icon-moon"></i>
+              </span>
+            </label>
+          </div>
+
+          <!-- Profile Dropdown -->
+          <div class="profile-dropdown-container">
+            <div class="profile-trigger" id="profileTrigger">
+              <i class="fas fa-user-circle"></i>
+              <span id="userEmail">Loading...</span>
+              <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </div>
+            
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="dropdown-header">
+                <div class="dropdown-user-info">
+                  <i class="fas fa-user-circle user-avatar"></i>
+                  <div class="user-details">
+                    <span class="user-name" id="dropdownUserName">Loading...</span>
+                    <span class="user-email-full" id="dropdownUserEmail">Loading...</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dropdown-divider"></div>
+              
+              <div class="dropdown-menu">
+                <!-- Role Display -->
+                <div class="dropdown-item role-item">
+                  <i class="fas fa-id-badge"></i>
+                  <span>Role: <strong id="dropdownUserRole">Loading...</strong></span>
+                </div>
+                
+                <div class="dropdown-divider"></div>
+                
+                <!-- Logout Button -->
+                <a href="#" class="dropdown-item logout-item" id="logoutBtn">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h1>Water Quality Analytics</h1>
+
+      <!-- Analytics Container -->
+      <div class="analytics-container">
+        
+        <!-- Time Range Controls -->
+        <div class="time-controls">
+          <label for="timeRange"><i class="fas fa-calendar-alt"></i> Time Range:</label>
+          <select id="timeRange" onchange="loadAnalyticsData()">
+            <option value="24h">Last 24 Hours</option>
+            <option value="7d" selected>Last 7 Days</option>
+            <option value="30d">Last 30 Days</option>
+            <option value="90d">Last 90 Days</option>
+          </select>
+
+          <label for="parameterFilter"><i class="fas fa-filter"></i> Parameter:</label>
+          <select id="parameterFilter" onchange="updateChartParameter()">
+            <option value="all" selected>All Parameters</option>
+            <option value="do">Dissolved Oxygen</option>
+            <option value="salinity">Salinity</option>
+            <option value="temperature">Temperature</option>
+            <option value="ph">pH Level</option>
+            <option value="turbidity">Turbidity</option>
+          </select>
+
+          <button class="refresh-btn" onclick="loadAnalyticsData()">
+            <i class="fas fa-sync-alt"></i>
+            Refresh
+          </button>
+        </div>
+
+        <!-- Advanced Analytics Controls -->
+        <div class="analytics-card" style="margin-bottom: 1.5rem;">
+          <div class="card-header" style="border-bottom: none; margin-bottom: 1rem; padding-bottom: 0;">
+            <div class="card-title">
+              <i class="fas fa-sliders-h"></i>
+              Advanced Analytics Settings
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <!-- Prediction Window -->
+            <div>
+              <label for="predictionWindow" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <i class="fas fa-clock"></i> Prediction Window
+              </label>
+              <select id="predictionWindow" onchange="updateAnalytics()">
+                <option value="3">3 Hours Ahead</option>
+                <option value="6" selected>6 Hours Ahead</option>
+                <option value="12">12 Hours Ahead</option>
+                <option value="24">24 Hours Ahead</option>
+              </select>
+            </div>
+
+            <!-- Prediction Data Range -->
+            <div>
+              <label for="predictionDataRange" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <i class="fas fa-database"></i> Use Data From Last
+              </label>
+              <select id="predictionDataRange" onchange="updateAnalytics()">
+                <option value="24">24 Hours</option>
+                <option value="48" selected>48 Hours</option>
+                <option value="168">7 Days</option>
+              </select>
+            </div>
+
+            <!-- Severity Filter -->
+            <div>
+              <label for="severityFilter" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <i class="fas fa-filter"></i> Show Insights
+              </label>
+              <select id="severityFilter" onchange="updateAnalytics()">
+                <option value="all" selected>All Insights</option>
+                <option value="danger">Critical Only</option>
+                <option value="warning-up">Warnings & Critical</option>
+                <option value="info-up">Info & Above</option>
+              </select>
+            </div>
+
+            <!-- Correlation Threshold -->
+            <div>
+              <label for="correlationThreshold" style="display: block; font-weight: 600; color: #475569; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <i class="fas fa-chart-line"></i> Correlation Strength
+              </label>
+              <select id="correlationThreshold" onchange="updateAnalytics()">
+                <option value="0.3">Show Weak & Above (30%+)</option>
+                <option value="0.5" selected>Show Moderate & Above (50%+)</option>
+                <option value="0.7">Show Strong Only (70%+)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Critical Alerts Panel (Only shows if there are critical/warning alerts) -->
+        <div class="critical-alerts-panel" id="criticalAlertsPanel" style="display: none;">
+          <div class="critical-alerts-title">
+            <i class="fas fa-exclamation-triangle"></i>
+            Forecasted Alerts & Critical Conditions
+          </div>
+          <div class="critical-alerts-list" id="criticalAlertsList">
+            <!-- Critical alerts will be populated here -->
+          </div>
+        </div>
+
+        <!-- Trend Analysis Chart -->
+        <div class="analytics-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <i class="fas fa-chart-line"></i>
+                Trend Analysis Over Time
+              </div>
+              <div class="card-subtitle">
+                Track how each parameter changes over your selected time period. Identify daily patterns, trends, and gradual changes.
+              </div>
+            </div>
+            <div class="chart-controls">
+              <button class="active" onclick="changeChartType('line')">Line</button>
+              <button onclick="changeChartType('area')">Area</button>
+            </div>
+          </div>
+          <canvas id="trendChart"></canvas>
+        </div>
+
+        <!-- Multi-Parameter Correlation Charts (User-Selectable Time Windows) -->
+        <div class="analytics-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">
+                <i class="fas fa-project-diagram"></i>
+                Multi-Parameter Correlation Analysis
+              </div>
+              <div class="card-subtitle">
+                Select which time windows to display. Use scroll wheel to zoom, drag to pan through the data.
+              </div>
+            </div>
+            
+            <!-- Time Window Selection Controls (Moved to header) -->
+            <div class="time-window-controls-inline">
+              <div class="checkbox-group-inline">
+                <label class="checkbox-label-inline">
+                  <input type="checkbox" id="show6h" onchange="toggleTimeWindow('6h')">
+                  <span>6h</span>
+                </label>
+                <label class="checkbox-label-inline">
+                  <input type="checkbox" id="show12h" onchange="toggleTimeWindow('12h')">
+                  <span>12h</span>
+                </label>
+                <label class="checkbox-label-inline">
+                  <input type="checkbox" id="show24h" onchange="toggleTimeWindow('24h')">
+                  <span>24h</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State Message (shown when nothing is selected) -->
+          <div class="empty-state" id="emptyStateMessage">
+            <div class="empty-state-icon">📊</div>
+            <h3>No Time Windows Selected</h3>
+            <p>Check one or more boxes above to display correlation charts.</p>
+          </div>
+
+          <!-- 6-Hour Window (Most Detailed) -->
+          <div class="time-window-section" id="section6h" style="display: none;">
+            <div class="time-window-header">
+              <h3><i class="fas fa-clock"></i> Last 6 Hours (Detailed View)</h3>
+              <span class="data-count" id="count6h">-- readings</span>
+            </div>
+            <canvas id="correlationChart6h"></canvas>
+            <button class="reset-zoom-btn" onclick="resetZoom('6h')">
+              <i class="fas fa-search-minus"></i> Reset Zoom
+            </button>
+          </div>
+
+          <!-- 12-Hour Window (Medium Detail) -->
+          <div class="time-window-section" id="section12h" style="display: none;">
+            <div class="time-window-header">
+              <h3><i class="fas fa-clock"></i> Last 12 Hours (Medium View)</h3>
+              <span class="data-count" id="count12h">-- readings</span>
+            </div>
+            <canvas id="correlationChart12h"></canvas>
+            <button class="reset-zoom-btn" onclick="resetZoom('12h')">
+              <i class="fas fa-search-minus"></i> Reset Zoom
+            </button>
+          </div>
+
+          <!-- 24-Hour Window (Overview) -->
+          <div class="time-window-section" id="section24h" style="display: none;">
+            <div class="time-window-header">
+              <h3><i class="fas fa-clock"></i> Last 24 Hours (Overview)</h3>
+              <span class="data-count" id="count24h">-- readings</span>
+            </div>
+            <canvas id="correlationChart24h"></canvas>
+            <button class="reset-zoom-btn" onclick="resetZoom('24h')">
+              <i class="fas fa-search-minus"></i> Reset Zoom
+            </button>
+          </div>
+        </div>
+
+        <!-- General Insights Panel (Correlations, Patterns, Info) -->
+        <div class="insights-panel" id="insightsPanel">
+          <div class="insights-title">
+            <i class="fas fa-lightbulb"></i>
+            Statistical Insights & Patterns
+          </div>
+          <div class="insights-list" id="insightsList">
+            <div class="loading-state">
+              <div class="loading-spinner"></div>
+              <p>Analyzing water quality patterns...</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- Your Firebase Config -->
+  <script src="../js/firebase.js"></script>
+
+  <!-- Authentication (LOAD FIRST) -->
+  <script src="../js/auth.js"></script>
+
+  <!-- App Logic (LOAD AFTER AUTH) -->
+  <script src="../js/app.js"></script>
+
+  <!-- dashEssentials Script -->
+  <script src="../js/dashEssentials.js"></script>
+
+  <!-- Analytics Script -->
+  <script src="../js/analytics.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User & System Configuration</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <!-- External CSS - Uses same dashboard CSS -->
+  <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/about.css">
+
+</head>
+
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h3 id="loadingText">Loading...</h3>
+    </div>
+  </div>
+
+  <!-- Mode Transition Overlay -->
+  <div class="mode-transition" id="modeTransition"></div>
+  
+  <!-- Stars for dark mode -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Hamburger Button -->
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Overlay behind sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <ul>
+        <li><a href="dashboard.html"><i class="fas fa-home icon"></i><span class="text">Dashboard</span></a></li>
+        <li id="historyTab"><a href="history.html" data-hide-for-role="guest"><i class="fas fa-database icon"></i><span class="text">Data and Analysis</span></a></li>
+        <li id="alertsTab"><a href="alerts.html"><i class="fas fa-bell icon"></i><span class="text">Alerts</span></a></li>
+        <li id="reportsTab"><a href="reports.html"><i class="fas fa-file-alt icon"></i><span class="text">Reports</span></a></li>
+        <li id="aboutTab" class="active"><a href="about.html"><i class="fas fa-info-circle icon"></i><span class="text">About</span></a></li>
+        <li id="systemConfigurationTab"><a href="systemConfig.html"><i class="fas fa-user-cog icon"></i><span class="text">System Configuration</span></a></li>
+        <li id="adminDashboardTab" style="display: none;"><a href="admindashboard.html"><i class="fas fa-user-shield icon"></i><span class="text">Admin</span></a></li>
+      </ul>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <h1>About Bangus Pond Monitor</h1>
+
+      <!-- System Overview Section -->
+      <section class="about-section">
+        <h2 class="section-title">System Overview</h2>
+        <div class="about-content">
+          <p>
+            Bangus Fish Pond Water Quality Monitoring System is an innovative, 
+            solar-powered solution designed to help fish pond operators maintain optimal water conditions for 
+            healthy bangus production. By utilizing advanced IoT technology and real-time monitoring, we provide pond 
+            owners with the critical information they need to make informed decisions and prevent 
+            fish mortality due to poor water quality.
+          </p>
+          <p>
+            The system employs a buoy-based approach, deploying sensors directly 
+            in the pond to continuously measure five essential water quality parameters. 
+            All data is transmitted wirelessly to a cloud-based platform, accessible through 
+            user-friendly web interface from anywhere, at any time.
+          </p>
+        </div>
+      </section>
+
+      <!-- Key Features Section -->
+      <section class="about-section">
+        <h2 class="section-title">
+        Key Features
+        </h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="sensor-icon sun"><i class="fas fa-sun"></i></div>
+            <h3>Solar Powered</h3>
+            <p>Eco-friendly energy source for sustainable, long-term operation</p>
+          </div>
+          <div class="feature-card">
+            <div class="sensor-icon wifi"><i class="fas fa-wifi"></i></div>
+            <h3>Real-Time Monitoring</h3>
+            <p>Continuous data collection and wireless transmission via ESP32</p>
+          </div>
+          <div class="feature-card">
+            <div class="sensor-icon bell"><i class="fas fa-bell"></i></div>
+            <h3>Smart Alerts</h3>
+            <p>Instant notifications when water quality falls outside safe ranges</p>
+          </div>
+          <div class="feature-card">
+            <div class="sensor-icon database"><i class="fas fa-database"></i></div>
+            <h3>Cloud Storage</h3>
+            <p>Secure data storage via Google Firebase</p>
+          </div>
+          <div class="feature-card">
+            <div class="sensor-icon chart"><i class="fas fa-chart-line"></i></div>
+            <h3>Data Analytics</h3>
+            <p>Comprehensive reports and trends for informed decision-making</p>
+          </div>
+          <div class="feature-card">
+            <div class="sensor-icon mobile"><i class="fas fa-mobile-alt"></i></div>
+            <h3>Web Dashboard</h3>
+            <p>User-friendly interface accessible from any device</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Water Quality Sensors Section -->
+      <section class="about-section">
+        <h2 class="section-title">
+        Water Quality Sensors
+        </h2>
+        <div class="sensors-grid">
+          <div class="sensor-card">
+            <div class="sensor-icon do">
+              <i class="fas fa-wind"></i>
+            </div>
+            <h3>Dissolved Oxygen (DO)</h3>
+            <p><strong>Model:</strong> SEN0237</p>
+            <p>Measures oxygen levels essential for fish respiration and aquatic ecosystem health</p>
+          </div>
+          
+          <div class="sensor-card">
+            <div class="sensor-icon temp">
+              <i class="fas fa-thermometer-half"></i>
+            </div>
+            <h3>Temperature</h3>
+            <p><strong>Model:</strong> DS18B20</p>
+            <p>Monitors water temperature to ensure optimal conditions for bangus growth</p>
+          </div>
+          
+          <div class="sensor-card">
+            <div class="sensor-icon ph">
+              <i class="fas fa-flask"></i>
+            </div>
+            <h3>pH Level</h3>
+            <p><strong>Model:</strong> PH-4502C</p>
+            <p>Measures acidity/alkalinity to maintain ideal water chemistry for aquaculture</p>
+          </div>
+          
+          <div class="sensor-card">
+            <div class="sensor-icon salinity">
+              <i class="fas fa-droplet"></i>
+            </div>
+            <h3>Salinity</h3>
+            <p><strong>Model:</strong> DFR0300</p>
+            <p>Tracks salt concentration in water, critical for brackish water pond management</p>
+          </div>
+          
+          <div class="sensor-card">
+            <div class="sensor-icon turbidity">
+              <i class="fas fa-eye-slash"></i>
+            </div>
+            <h3>Turbidity</h3>
+            <p><strong>Model:</strong> SEN0189</p>
+            <p>Measures water clarity and particle suspension to assess water quality</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hardware Architecture Section -->
+      <section class="about-section">
+        <h2 class="section-title">
+        Architecture
+        </h2>
+        <div class="architecture-container">
+          <div class="architecture-box">
+            <div class="arch-icon">
+              <i class="fas fa-microchip"></i>
+            </div>
+            <h3>Arduino Mega 2560</h3>
+            <p>Data Acquisition & Processing</p>
+            <p class="arch-desc">Collects sensor readings and performs initial data processing</p>
+          </div>
+          
+          <div class="architecture-arrow">
+            <i class="fas fa-exchange-alt"></i>
+          </div>
+          
+          <div class="architecture-box">
+            <div class="arch-icon esp32">
+              <i class="fas fa-wifi"></i>
+            </div>
+            <h3>ESP32 Microcontroller</h3>
+            <p>Communication & Cloud Sync</p>
+            <p class="arch-desc">Manages serial communication and transmits data to Firebase</p>
+          </div>
+          
+          <div class="architecture-arrow">
+            <i class="fas fa-exchange-alt"></i>
+          </div>
+          
+          <div class="architecture-box">
+            <div class="arch-icon firebase">
+              <i class="fas fa-cloud"></i>
+            </div>
+            <h3>Google Firebase</h3>
+            <p>Cloud Storage & Real-Time Database</p>
+            <p class="arch-desc">Stores data and enables real-time updates to the web dashboard</p>
+          </div>
+          
+          <div class="architecture-arrow">
+            <i class="fas fa-exchange-alt"></i>
+          </div>
+          
+          <div class="architecture-box">
+            <div class="arch-icon website">
+              <i class="fas fa-globe"></i>
+            </div>
+            <h3>Web Dashboard</h3>
+            <p>User Interface & Monitoring</p>
+            <p class="arch-desc">Real-time display of water quality data and system status</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Technology Stack Section -->
+      <section class="about-section">
+        <h2 class="section-title">
+          Technology Used
+        </h2>
+        <div class="tech-stack">
+          <div class="tech-column">
+            <h4>Frontend</h4>
+            <ul>
+              <li>HTML5</li>
+              <li>CSS3</li>
+              <li>JavaScript (Vanilla)</li>
+
+            </ul>
+          </div>
+          <div class="tech-column">
+            <h4>Backend & Hardware</h4>
+            <ul>
+              <li>Arduino IDE</li>
+              <li>C/C++ (Embedded)</li>
+              <li>ESP32 SDK</li>
+              <li>Serial Communication</li>
+            </ul>
+          </div>
+          <div class="tech-column">
+            <h4>Cloud Services</h4>
+            <ul>
+              <li>Google Firebase</li>
+              <li>Real-time Database</li>
+              <li>Authentication</li>
+              <li>Cloud Storage</li>
+            </ul>
+          </div>
+          <div class="tech-column">
+            <h4>Power Management</h4>
+            <ul>
+              <li>Solar Panel</li>
+              <li>Battery System</li>
+              <li>Charge Controller</li>
+              <li>Buck Converter</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+
+<!-- Firebase SDK v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<!-- Your Firebase Config -->
+<script src="../js/firebase.js"></script>
+
+<!-- Authentication (LOAD FIRST) -->
+<script src="../js/auth.js"></script>
+
+<!-- App Logic (LOAD AFTER AUTH) -->
+<script src="../js/app.js"></script>
+
+<script src="../js/dashEssentials.js"></script>
+
+</body>
+</html>
