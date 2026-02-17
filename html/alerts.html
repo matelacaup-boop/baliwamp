@@ -53,7 +53,7 @@
       <ul>
 
         <!-- ✅ ALL ROLES -->
-        <li class="active">
+        <li>
           <a href="dashboard.html">
             <i class="fas fa-home icon"></i>
             <span class="text">Dashboard</span>
@@ -69,7 +69,7 @@
         </li>
 
         <!-- ✅ USER + ADMIN only (hidden from guest) -->
-        <li id="alertsTab" data-hide-for-role="guest">
+        <li id="alertsTab" class="active" data-hide-for-role="guest">
           <a href="alerts.html">
             <i class="fas fa-bell icon"></i>
             <span class="text">Alerts</span>
@@ -342,4 +342,5 @@
   <script src="../js/dashEssentials.js"></script>
 
 </body>
+
 </html>
