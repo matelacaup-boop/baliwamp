@@ -428,13 +428,63 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <ul>
-        <li><a href="dashboard.html"><i class="fas fa-home icon"></i><span class="text">Dashboard</span></a></li>
-        <li id="historyTab"><a href="history.html" data-hide-for-role="guest"><i class="fas fa-database icon"></i><span class="text">Data and Analysis</span></a></li>
-        <li id="alertsTab"><a href="alerts.html"><i class="fas fa-bell icon"></i><span class="text">Alerts</span></a></li>
-        <li id="reportsTab" class="active"><a href="reports.html"><i class="fas fa-file-alt icon"></i><span class="text">Reports</span></a></li>
-        <li id="aboutTab"><a href="about.html"><i class="fas fa-info-circle icon"></i><span class="text">About</span></a></li>
-        <li id="systemConfigurationTab"><a href="systemConfig.html"><i class="fas fa-user-cog icon"></i><span class="text">System Configuration</span></a></li>
-        <li id="adminDashboardTab" style="display: none;"><a href="admindashboard.html"><i class="fas fa-user-shield icon"></i><span class="text">Admin</span></a></li>
+
+        <!-- ✅ ALL ROLES -->
+        <li>
+          <a href="dashboard.html">
+            <i class="fas fa-home icon"></i>
+            <span class="text">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="historyTab" data-hide-for-role="guest">
+          <a href="history.html">
+            <i class="fas fa-database icon"></i>
+            <span class="text">Data and Analysis</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="alertsTab" data-hide-for-role="guest">
+          <a href="alerts.html">
+            <i class="fas fa-bell icon"></i>
+            <span class="text">Alerts</span>
+          </a>
+        </li>
+
+        <!-- ✅ USER + ADMIN only (hidden from guest) -->
+        <li id="reportsTab" class="active" data-hide-for-role="guest">
+          <a href="reports.html">
+            <i class="fas fa-file-alt icon"></i>
+            <span class="text">Reports</span>
+          </a>
+        </li>
+
+        <!-- ✅ ALL ROLES -->
+        <li id="aboutTab">
+          <a href="about.html">
+            <i class="fas fa-info-circle icon"></i>
+            <span class="text">About</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="systemConfigurationTab" data-role="admin">
+          <a href="systemConfig.html">
+            <i class="fas fa-user-cog icon"></i>
+            <span class="text">User & System</span>
+          </a>
+        </li>
+
+        <!-- ✅ ADMIN only -->
+        <li id="adminDashboardTab" data-role="admin">
+          <a href="admindashboard.html">
+            <i class="fas fa-user-shield icon"></i>
+            <span class="text">Admin</span>
+          </a>
+        </li>
+
       </ul>
     </aside>
 
@@ -1022,5 +1072,4 @@
   </script>
 
 </body>
-
 </html>
