@@ -1,5 +1,3 @@
-// admin.js - ADMIN USER MANAGEMENT FUNCTIONALITY
-
 console.log("admin.js loading...");
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -13,7 +11,6 @@ document.addEventListener('DOMContentLoaded', async function() {
   const database = firebase.database();
   console.log("Firebase initialized");
 
-  // Check if user is admin
   const currentUser = window.getCurrentUser();
   if (!currentUser || currentUser.role !== 'admin') {
     console.log("Not an admin, redirecting...");
@@ -49,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }
 
-  // Display users in table
+
   function displayUsers(users) {
     const tbody = document.getElementById('usersTableBody');
     tbody.innerHTML = '';
@@ -61,16 +58,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
   }
 
-  // Create user table row
   function createUserRow(uid, user) {
     const tr = document.createElement('tr');
     
-    // Email
     const tdEmail = document.createElement('td');
     tdEmail.textContent = user.email || 'N/A';
     tr.appendChild(tdEmail);
 
-    // Role
+
     const tdRole = document.createElement('td');
     const roleBadge = document.createElement('span');
     roleBadge.className = `role-badge role-${user.role || 'user'}`;
@@ -78,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     tdRole.appendChild(roleBadge);
     tr.appendChild(tdRole);
 
-    // Status
+
     const tdStatus = document.createElement('td');
     const statusBadge = document.createElement('span');
     const status = user.accountStatus || 'active';
@@ -87,27 +82,27 @@ document.addEventListener('DOMContentLoaded', async function() {
     tdStatus.appendChild(statusBadge);
     tr.appendChild(tdStatus);
 
-    // Created
+    
     const tdCreated = document.createElement('td');
     tdCreated.textContent = user.createdAt ? formatDate(user.createdAt) : 'N/A';
     tr.appendChild(tdCreated);
 
-    // Last Login
+
     const tdLastLogin = document.createElement('td');
     tdLastLogin.textContent = user.lastLogin ? formatDate(user.lastLogin) : 'Never';
     tr.appendChild(tdLastLogin);
 
-    // Actions
+
     const tdActions = document.createElement('td');
     
-    // Change Role button
+
     const btnChangeRole = document.createElement('button');
     btnChangeRole.className = 'action-btn btn-edit';
     btnChangeRole.innerHTML = '<i class="fas fa-user-cog"></i> Change Role';
     btnChangeRole.onclick = () => changeUserRole(uid, user);
     tdActions.appendChild(btnChangeRole);
 
-    // Enable/Disable button
+ 
     const isDisabled = status === 'disabled';
     const btnToggleStatus = document.createElement('button');
     btnToggleStatus.className = `action-btn ${isDisabled ? 'btn-enable' : 'btn-disable'}`;
@@ -243,4 +238,5 @@ document.addEventListener('DOMContentLoaded', async function() {
   setInterval(loadUsers, 30000);
 
   console.log("✅ Admin.js fully loaded and ready");
+
 });
